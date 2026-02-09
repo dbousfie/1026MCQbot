@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-const QUALTRICS_API_TOKEN = Deno.env.get("QUALTRICS_API_TOKEN");
-const QUALTRICS_SURVEY_ID = Deno.env.get("QUALTRICS_SURVEY_ID");
-const QUALTRICS_DATACENTER = Deno.env.get("QUALTRICS_DATACENTER");
+// const QUALTRICS_API_TOKEN = Deno.env.get("QUALTRICS_API_TOKEN");
+// const QUALTRICS_SURVEY_ID = Deno.env.get("QUALTRICS_SURVEY_ID");
+// const QUALTRICS_DATACENTER = Deno.env.get("QUALTRICS_DATACENTER");
 const SYLLABUS_LINK = Deno.env.get("SYLLABUS_LINK") || "";
 const GEMINI_MODEL = Deno.env.get("GEMINI_MODEL") || "gemini-2.5-flash";
 

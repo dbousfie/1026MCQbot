@@ -167,33 +167,24 @@
       }
     }
 
-    submitBtn.addEventListener("click", async () => {
-      const selected = document.querySelector('input[name="mode"]:checked');
+    loadTranscriptOptions();
 
-      if (!selected) {
-        responseBox.textContent = "Please select an option.";
-        responseBox.classList.remove("placeholder");
-        return;
-      }
+<!--    submitBtn.addEventListener("click", async () => {-->
+<!--      const selected = document.querySelector('input[name="mode"]:checked');-->
 
-      const mode = selected.value;
+<!--      if (!selected) {-->
+<!--        responseBox.textContent = "Please select an option.";-->
+<!--        responseBox.classList.remove("placeholder");-->
+<!--        return;-->
+<!--      }-->
 
-      // UI feedback only (backend unchanged for now)
-      responseBox.classList.remove("placeholder");
-      responseBox.textContent = `Selected mode: ${mode}\n\nWaiting for backend integration...`;
+<!--      const mode = selected.value;-->
 
-      /*
-      // 🔗 Later you can drop your existing fetch logic here:
-      const res = await fetch("https://your-backend-url", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode })
-      });
+<!--      // UI feedback only (backend unchanged for now)-->
+<!--      responseBox.classList.remove("placeholder");-->
+<!--      responseBox.textContent = `Selected mode: ${mode}\n\nWaiting for backend integration...`;-->
 
-      const text = await res.text();
-      responseBox.textContent = text;
-      */
-    });
+<!--    });-->
   </script>
 </body>
 </html>
