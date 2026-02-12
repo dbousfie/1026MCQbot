@@ -61,86 +61,86 @@ serve(async (req: Request): Promise<Response> => {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", },
     });
   }
-
-// Post method
-  if (req.method === "POST" && url.pathname === "/") {
-        const body = await req.json();
-        const transcript = body.transcript;
-
-        if (!transcript) {
-            return new Response("No transcript provided", {
-              headers: corsHeaders,
-              status: 400,
-            });
-        }
-
-        // SECURITY: prevent path traversal
-        if (!transcript.endsWith(".txt")) {
-          return new Response("Invalid file, not txt", {
-            headers: corsHeaders,
-            status: 400,
-          });
-        }
-
-        const filePath = `./1026_midterm_transcripts/${transcript}`;
-
-        let transcriptContent: string;
-
-        try {
-          transcriptContent = await Deno.readTextFile(filePath);
-        } catch {
-          return new Response("Error reading transcript", {
-            headers: corsHeaders,
-            status: 404,
-          });
-        }
-
-        if (!GEMINI_API_KEY) {
-          return new Response("Missing GEMINI API key", { status: 500 });
-        }
-
-        // Send transcriptContent to Gemini
-        const prompt = `
-          Generate 5 high-quality multiple choice questions based on the following transcript:
-
-          ${transcriptContent}
-          `;
-
-      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-        {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            contents: [
-              {
-                role: "user",
-                parts: [
-                { text: prompt }
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.2, // controls creativity
-              maxOutputTokens: 10000,
-            },
-        }),
-      });
-
-      const geminiJson = await geminiResponse.json();
-      const baseResponse =
-          geminiJson?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "No response from Gemini";
-      const result = `${baseResponse}\n\nThere may be errors in my responses; always refer to the course web page: ${SYLLABUS_LINK}`;
-
-      let qualtricsStatus = "Qualtrics not called";
-
-      return new Response(`${result}\n<!-- ${qualtricsStatus} -->`, {
-        headers: {
-          "Content-Type": "text/plain",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-  }
+//
+// // Post method
+//   if (req.method === "POST" && url.pathname === "/") {
+//         const body = await req.json();
+//         const transcript = body.transcript;
+//
+//         if (!transcript) {
+//             return new Response("No transcript provided", {
+//               headers: corsHeaders,
+//               status: 400,
+//             });
+//         }
+//
+//         // SECURITY: prevent path traversal
+//         if (!transcript.endsWith(".txt")) {
+//           return new Response("Invalid file, not txt", {
+//             headers: corsHeaders,
+//             status: 400,
+//           });
+//         }
+//
+//         const filePath = `./1026_midterm_transcripts/${transcript}`;
+//
+//         let transcriptContent: string;
+//
+//         try {
+//           transcriptContent = await Deno.readTextFile(filePath);
+//         } catch {
+//           return new Response("Error reading transcript", {
+//             headers: corsHeaders,
+//             status: 404,
+//           });
+//         }
+//
+//         if (!GEMINI_API_KEY) {
+//           return new Response("Missing GEMINI API key", { status: 500 });
+//         }
+//
+//         // Send transcriptContent to Gemini
+//         const prompt = `
+//           Generate 5 high-quality multiple choice questions based on the following transcript:
+//
+//           ${transcriptContent}
+//           `;
+//
+//       const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+//         {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//             contents: [
+//               {
+//                 role: "user",
+//                 parts: [
+//                 { text: prompt }
+//                 ],
+//               },
+//             ],
+//             generationConfig: {
+//               temperature: 0.2, // controls creativity
+//               maxOutputTokens: 10000,
+//             },
+//         }),
+//       });
+//
+//       const geminiJson = await geminiResponse.json();
+//       const baseResponse =
+//           geminiJson?.candidates?.[0]?.content?.parts?.[0]?.text ||
+//           "No response from Gemini";
+//       const result = `${baseResponse}\n\nThere may be errors in my responses; always refer to the course web page: ${SYLLABUS_LINK}`;
+//
+//       let qualtricsStatus = "Qualtrics not called";
+//
+//       return new Response(`${result}\n<!-- ${qualtricsStatus} -->`, {
+//         headers: {
+//           "Content-Type": "text/plain",
+//           "Access-Control-Allow-Origin": "*",
+//         },
+//       });
+//   }
 });
