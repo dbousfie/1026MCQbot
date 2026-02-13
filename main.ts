@@ -107,9 +107,10 @@ serve(async (req: Request): Promise<Response> => {
 
           Requirements:
           - Each question must be directly answerable using the lecture content.
-          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture' and refer to the speaker as 'Dan'
+          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture' a
+          - Refer to the speaker or lecturer as 'Dan'
           - Do NOT use outside knowledge.
-          - Only one correct answer per question, high on Bloom's taxonomy, testing understanding of concepts.
+          - Only one correct answer per question, high on Bloom's taxonomy, focused on understanding of key concepts and ideas NOT facts.
           - Provide the correct answer clearly after each question.
           - Questions should test understanding, focusing on the idiosyncratic and political arguments of the lecture.
 
