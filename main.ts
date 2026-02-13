@@ -107,7 +107,7 @@ serve(async (req: Request): Promise<Response> => {
 
           Requirements:
           - Each question must be directly answerable using the lecture content.
-          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture' 
+          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture' and refer to the speaker as 'Dan'
           - Do NOT use outside knowledge.
           - Only one correct answer per question, high on Bloom's taxonomy, testing understanding of concepts.
           - Provide the correct answer clearly after each question.
