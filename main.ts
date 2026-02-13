@@ -103,14 +103,15 @@ serve(async (req: Request): Promise<Response> => {
         const prompt = `
           You are an academic instructor and want to help student to prepare for exams.
 
-          Using ONLY the content provided in the transcript below, generate 10 high-quality multiple choice questions for student to practice.
+          Using ONLY the content provided in the lecture transcripts below, generate 10 multiple choice questions high on Bloom's taxonomy for student to practice.
 
           Requirements:
           - Each question must be directly answerable using the transcript.
+          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture' 
           - Do NOT use outside knowledge.
           - Only one correct answer per question.
           - Provide the correct answer clearly after each question.
-          - Questions should test understanding, not trivial wording.
+          - Questions should test understanding, focusing on the idiosyncratic and political arguments of the lecture.
 
           Transcript:
           ${transcriptContent}
