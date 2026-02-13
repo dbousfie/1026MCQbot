@@ -170,7 +170,7 @@
         });
 
       } catch (err) {
-        optionList.innerHTML = "<p style='color:red'>Failed to load transcripts</p>";
+        optionList.innerHTML = "<p style='color:red'>Failed to load lectures</p>";
       }
     }
 
@@ -181,7 +181,7 @@
         const selected = document.querySelector('input[name="mode"]:checked');
 
         if (!selected) {
-            responseBox.textContent = "Please select a transcript.";
+            responseBox.textContent = "Please select a lecture.";
             return;
         }
         const transcriptFile = selected.value;
