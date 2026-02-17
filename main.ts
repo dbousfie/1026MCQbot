@@ -90,7 +90,7 @@ serve(async (req: Request): Promise<Response> => {
           ${transcriptContent}
           `;
 
-      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+      const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
         {
         method: "POST",
         headers: {
