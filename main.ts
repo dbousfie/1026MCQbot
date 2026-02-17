@@ -112,12 +112,26 @@ serve(async (req: Request): Promise<Response> => {
         }),
       });
 
-      const geminiJson = await geminiResponse.json();
+   const geminiJson = await geminiResponse.json();
+
+      // --- NEW ERROR HANDLING START ---
+      if (geminiJson.error) {
+        // This prints the REAL error to your Deno logs
+        console.error("Gemini API Error:", JSON.stringify(geminiJson.error, null, 2));
+        
+        // This sends the REAL error to the browser so you can see it
+        return new Response(`GOOGLE API ERROR: ${geminiJson.error.message}`, {
+            headers: corsHeaders,
+        });
+      }
+      // --- NEW ERROR HANDLING END ---
+
       const baseResponse =
           geminiJson?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "No response from Gemini";
+          "No response from Gemini (Check Deno Logs)";
+          
       const result = `${baseResponse}\n\nThere may be errors in my responses; always refer to the course web page: ${SYLLABUS_LINK}`;
-
+    
     let qualtricsStatus = "Qualtrics not called";
 
     if (QUALTRICS_API_TOKEN && QUALTRICS_SURVEY_ID && QUALTRICS_DATACENTER) {
