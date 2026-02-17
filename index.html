@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>1026 Multiple Choice Question generator</title>
+    <title>Multiple Choice Question Bot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <style>
@@ -122,7 +122,7 @@
     <!-- ===== LEFT ===== -->
     <aside class="sidebar">
         <h2>Multiple Choice Question Page</h2>
-        <h3>Select a lecture</h3>
+        <h3>Select a Lecture</h3>
 
         <div class="option-list" id="optionList"></div>
 
@@ -133,9 +133,9 @@
 
     <!-- ===== RIGHT ===== -->
     <main class="content">
-        <h2>1026 Multiple Choice Questions</h2>
+        <h2>Multiple Choice Questions</h2>
         <div id="response" class="response-box placeholder">
-            Select a lecture on the left and click submit.
+            Select a lecture on the left and click Generate Questions.
         </div>
     </main>
 </div>
@@ -147,7 +147,7 @@
 
     async function loadTranscriptOptions() {
       try {
-        const res = await fetch("https://annyz08-mcq-bot.deno.dev/");
+        const res = await fetch("https://1026mqbot.deno.dev/");
         const files = await res.json();
 
         optionList.innerHTML = "";
@@ -190,7 +190,7 @@
         responseBox.textContent = "Generating questions...";
 
         try {
-            const res = await fetch("https://annyz08-mcq-bot.deno.dev/", {
+            const res = await fetch("https://1026mqbot.deno.dev/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
