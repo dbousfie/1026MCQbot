@@ -147,7 +147,7 @@
 
     async function loadTranscriptOptions() {
       try {
-        const res = await fetch("https://1026mqbot.deno.dev/");
+        const res = await fetch("https://1026mcqbot.deno.dev/");
         const files = await res.json();
 
         optionList.innerHTML = "";
@@ -190,7 +190,7 @@
         responseBox.textContent = "Generating questions...";
 
         try {
-            const res = await fetch("https://1026mqbot.deno.dev/", {
+            const res = await fetch("https://1026mcqbot.deno.dev/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
