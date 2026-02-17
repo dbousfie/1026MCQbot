@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-// const QUALTRICS_API_TOKEN = Deno.env.get("QUALTRICS_API_TOKEN");
-// const QUALTRICS_SURVEY_ID = Deno.env.get("QUALTRICS_SURVEY_ID");
-// const QUALTRICS_DATACENTER = Deno.env.get("QUALTRICS_DATACENTER");
+const QUALTRICS_API_TOKEN = Deno.env.get("QUALTRICS_API_TOKEN");
+const QUALTRICS_SURVEY_ID = Deno.env.get("QUALTRICS_SURVEY_ID");
+const QUALTRICS_DATACENTER = Deno.env.get("QUALTRICS_DATACENTER");
 const SYLLABUS_LINK = Deno.env.get("SYLLABUS_LINK") || "";
 const GEMINI_MODEL = Deno.env.get("GEMINI_MODEL") || "gemini-2.5-flash";
 const corsHeaders = {
@@ -11,33 +11,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
-
-
-// async function loadFolderAsContext(folderPath: string): Promise<string> {
-//   let combined = "";
-//
-//   for await (const entry of Deno.readDir(folderPath)) {
-//     if (entry.isFile) {
-//       let content: string;
-//       try {
-//         content = await Deno.readTextFile(`${folderPath}/${entry.name}`);
-//       } catch (err) {
-//         console.error("Failed to read file:", entry.name, err);
-//       }
-//       combined += `\n\n===== ${entry.name} =====\n\n${content}`;
-//     }
-//   }
-//
-//     const MAX_TOKENS = 1000000;
-//     const estimatedTokens = Math.ceil(combined.length / 4);
-//
-//     if (estimatedTokens > MAX_TOKENS) {
-//       console.log(`Context too large: ${estimatedTokens} tokens`);
-//       throw new Error(`Context too large: ${estimatedTokens} tokens`);
-//     }
-//
-//   return combined;
-// }
 
 serve(async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -101,20 +74,19 @@ serve(async (req: Request): Promise<Response> => {
 
         // Send transcriptContent to Gemini
         const prompt = `
-          You are an academic instructor and want to help student to prepare for exams.
+            You are an academic instructor and want to help student to prepare for exams.
 
-          Using ONLY the content provided in the lecture content below, generate 5 multiple choice questions high on Bloom's taxonomy for student to practice.
+            The following is a lecture content delivered by Dan in class. Using ONLY the content to generate 5 multiple choice questions high on Bloom's taxonomy for student to practice.
+            Requirements:
+            - Each question must be directly answerable using the lecture content.
+            - Do NOT include the words "transcript", "speaker", "lecturer", or any synonym referring to the source format.
+            - You must refer to the instructor only as "Dan" or "the prof".
+            - Do NOT use outside knowledge.
+            - Only one correct answer per question, high on Bloom's taxonomy, focused on understanding of key concepts and ideas.
+            - Provide the correct answer clearly after each question.
+            - Questions should test understanding, focusing on the idiosyncratic and political arguments of the lecture.
 
-          Requirements:
-          - Each question must be directly answerable using the lecture content.
-          - Do NOT refer to 'the transcripts' or 'transcript' but instead characterize it as 'the lecture'
-          - Refer to 'the speaker' or 'the lecturer' as 'Dan' or 'the prof'
-          - Do NOT use outside knowledge.
-          - Only one correct answer per question, high on Bloom's taxonomy, focused on understanding of key concepts and ideas.
-          - Provide the correct answer clearly after each question.
-          - Questions should test understanding, focusing on the idiosyncratic and political arguments of the lecture.
-
-          Transcript:
+          Lecture Content:
           ${transcriptContent}
           `;
 
@@ -146,13 +118,33 @@ serve(async (req: Request): Promise<Response> => {
           "No response from Gemini";
       const result = `${baseResponse}\n\nThere may be errors in my responses; always refer to the course web page: ${SYLLABUS_LINK}`;
 
-      let qualtricsStatus = "Qualtrics not called";
+    let qualtricsStatus = "Qualtrics not called";
 
-      return new Response(`${result}\n<!-- ${qualtricsStatus} -->`, {
+    if (QUALTRICS_API_TOKEN && QUALTRICS_SURVEY_ID && QUALTRICS_DATACENTER) {
+        const qualtricsPayload = {
+          values: {
+            responseText: result,
+            lectureName: transcript,
+          },
+        };
+
+        const qt = await fetch(`https://${QUALTRICS_DATACENTER}.qualtrics.com/API/v3/surveys/${QUALTRICS_SURVEY_ID}/responses`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-TOKEN": QUALTRICS_API_TOKEN,
+          },
+          body: JSON.stringify(qualtricsPayload),
+        });
+
+        qualtricsStatus = `Qualtrics status: ${qt.status}`;
+    }
+
+    return new Response(`${result}\n<!-- ${qualtricsStatus} -->`, {
         headers: {
           "Content-Type": "text/plain",
           "Access-Control-Allow-Origin": "*",
         },
-      });
+    });
   }
 });
